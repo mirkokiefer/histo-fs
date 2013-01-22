@@ -1,0 +1,16 @@
+{
+  "name": "synclib2",
+  "version": "0.0.1",
+  "description": "sync your data",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha"
+  },
+  "repository": "",
+  "author": "Mirko Kiefer <mail@mirkokiefer.com>",
+  "license": "BSD",
+  "dependencies": {
+    "difftools": "~0.4.0",
+    "ancestor": "0.0.1"
+  }
+}
