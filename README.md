@@ -55,4 +55,4 @@ For diff, merge and patch computation the library makes heavy use of [diff-merge
 [Synclib](https://github.com/mirkok/synclib) only supported syncing of tree-based data. Synclib2 is the result of a complete rewrite while providing more generic support for various basic data structures.
 
 ##Contributors
-This project was created by Mirko Kiefer ([@mirkok](https://github.com/mirkok)).
+This project was created by Mirko Kiefer ([@mirkokiefer](https://github.com/mirkokiefer)).
