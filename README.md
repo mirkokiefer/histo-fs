@@ -10,6 +10,7 @@ Realtime and non-realtime syncing of common data structures:
 - **no timestamps**: history based 3-way merging
 - **distributed**: merging does not require a central server
 - **no change tracing**: change tracing is not necessary - support diff computation on the fly
+- **data agnostic**: leave diff and merge of the actual data to plugins
 - **be small**: only implement the functional parts of syncing - leave everything else to the application (transport, persistence)
 - **sensitive defaults**: have defaults that *just work* but still support custom logic (e.g. for conflict resolution)
 
@@ -54,4 +55,4 @@ For diff, merge and patch computation the library makes heavy use of [diff-merge
 [Synclib](https://github.com/mirkok/synclib) only supported syncing of tree-based data. Synclib2 is the result of a complete rewrite while providing more generic support for various basic data structures.
 
 ##Contributors
-This project was created by Mirko Kiefer ([@mirkok](https://github.com/mirkok)).
+This project was created by Mirko Kiefer ([@mirkokiefer](https://github.com/mirkokiefer)).

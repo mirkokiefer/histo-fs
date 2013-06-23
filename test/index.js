@@ -34,3 +34,4 @@ db.put(project.uri(), project, function(err, res) {
   // conflict because project has been changed by adding a task
   assert.ok(res.conflict)
 })
+
