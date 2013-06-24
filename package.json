@@ -2,6 +2,7 @@
   "name": "synclib2",
   "version": "0.0.1",
   "description": "sync your data",
+  "homepage": "https://github.com/mirkokiefer/synclib2",
   "main": "lib/index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha"
@@ -10,7 +11,8 @@
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
   "license": "BSD",
   "dependencies": {
-    "difftools": "~0.4.0",
-    "ancestor": "0.0.1"
+    "ancestor": "0.0.1",
+    "memdown": "0.2.0",
+    "levelup": "0.10.0"
   }
 }
