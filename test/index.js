@@ -12,13 +12,13 @@ var organization = {
 
 var jim = {
   dictionary: {
-    name: 'Jim'
+    name: 'Jim',
   }
 }
 
 var ann = {
   dictionary: {
-    name: 'Ann'
+    name: 'Ann',
   }
 }
 
@@ -39,7 +39,7 @@ var createExamples = {
 var writeTests = {
   dictionary: {
     title: 'Write tests',
-    assignee: '/ann'
+    assignee: '/ann',
     due_date: '2013-07-03'
   }
 }
@@ -57,8 +57,7 @@ describe('read/write to database', function() {
   it('should post jim as child resource', function(done) {
     db.post('/members', jim, function(err, res) {
       assert.deepEqual(res, {
-        "path":"/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c",
-        "hash":"86cd722c67a3ea77c5471a516bbd6e0dc410c5c3"
+        "path":"/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c"
       })
       done()
     })
@@ -66,16 +65,15 @@ describe('read/write to database', function() {
   it('should post ann as child resource', function(done) {
     db.post('/members', ann, function(err, res) {
       assert.deepEqual(res, {
-        "path":"/members/9c37ba065ec42fe4f900b7452b81888ffc04615a",
-        "hash":"5998e29c9003e1d2d2be515d0bdb571d191e4210"
+        "path":"/members/9c37ba065ec42fe4f900b7452b81888ffc04615a"
       })
       done()
     })
   })
   it('should retrieve the updated root resource', function(done) {
     var expected = {"dictionary":{
-      "members":"02482fd84dd3ef7d23915bcf34e8bba3d271782e",
-      "name":"LivelyCode"
+      "name":"LivelyCode",
+      "_children": ["members"]
     }}
     db.get('/', function(err, res) {
       assert.deepEqual(res, expected)
@@ -84,8 +82,7 @@ describe('read/write to database', function() {
   })
   it('should retrieve the list of members', function(done) {
     var expected = { dictionary: {
-      '9c37ba065ec42fe4f900b7452b81888ffc04615a': '5998e29c9003e1d2d2be515d0bdb571d191e4210',
-      'ddd0a27f2f483ef3117adb93b0153f5beb3e148c': '86cd722c67a3ea77c5471a516bbd6e0dc410c5c3'
+      "_children": ['9c37ba065ec42fe4f900b7452b81888ffc04615a', 'ddd0a27f2f483ef3117adb93b0153f5beb3e148c']
     } }
     db.get('/members', function(err, res) {
       assert.deepEqual(res, expected)
