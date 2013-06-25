@@ -14,11 +14,11 @@ var ancestor = {
   members: {hash: 'b'}
 }
 
-var serialized = stringify({
+var serialized = {
   name: {atom: 'My Company'},
   projects: {hash: 'a'},
   members: {hash: 'b'}
-})
+}
 
 describe('serialization', function() {
   it('should serialize a dictionary resource', function() {
