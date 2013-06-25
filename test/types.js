@@ -29,4 +29,13 @@ describe('serialization', function() {
     var res = types.dictionary.deserialize(serialized)
     assert.deepEqual(res, deserialized)
   })
+  it('should still serialize when no ancestor exisits', function() {
+    var res = types.dictionary.serialize(deserialized, undefined)
+    var expected = {dictionary: {
+      name: {atom: 'My Company'},
+      projects: {hash: null},
+      members: {hash: null}
+    }}
+    assert.deepEqual(res, expected)
+  })
 })
