@@ -102,3 +102,31 @@ describe('read/write to database', function() {
     })
   })
 })
+
+describe('committing', function() {
+  it('should commit the current state', function(done) {
+    db.commit(function(err, res) {
+      assert.equal(res.head, '9ef55624de09a06cc11d410f70cf3c4e30b4ce73')
+      done()
+    })
+  })
+  it('should change some existing data and verify its stored', function(done) {
+    var jim1 = {
+      dictionary: {
+        name: 'Jimmy',
+      }
+    }
+    db.put('/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c', jim1, function() {
+      db.get('/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c', function(err, res) {
+        assert.deepEqual(res, jim1)
+        done()
+      })
+    })
+  })
+  it('should commit the changes', function(done) {
+    db.commit(function(err, res) {
+      assert.equal(res.head, '07fb75f63278c746df96db2635acd7c4128a37fc')
+      done()
+    })
+  })
+})
