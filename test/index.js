@@ -107,7 +107,7 @@ describe('read/write to database', function() {
 describe('committing', function() {
   it('should commit the current state', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, '12d918f7f4bf11cbaa53f228bd8c96baeff0d0dc')
+      assert.equal(res.head, 'ff5ded15ee4435e6ebc91e92cb719a318de3ff16')
       done()
     })
   })
@@ -126,7 +126,29 @@ describe('committing', function() {
   })
   it('should commit the changes', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, '7961905b593da124c9b541f5d65b288d91da8c7f')
+      assert.equal(res.head, '9b36233a5748386d49dc7041905c7be3617b051d')
+      done()
+    })
+  })
+  it('should retrieve the last commit', function(done) {
+    var expected = {
+      data: '7961905b593da124c9b541f5d65b288d91da8c7f',
+      ancestors: [
+        'ff5ded15ee4435e6ebc91e92cb719a318de3ff16'
+      ]
+    }
+    db.getCommit('9b36233a5748386d49dc7041905c7be3617b051d', function(err, res) {
+      assert.deepEqual(res, expected)
+      done()
+    })
+  })
+  it('should retrieve the ancestor commit', function(done) {
+    var expected = {
+      data: '12d918f7f4bf11cbaa53f228bd8c96baeff0d0dc',
+      ancestors: []
+    }
+    db.getCommit('ff5ded15ee4435e6ebc91e92cb719a318de3ff16', function(err, res) {
+      assert.deepEqual(res, expected)
       done()
     })
   })
