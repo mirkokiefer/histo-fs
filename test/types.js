@@ -20,6 +20,14 @@ var serialized = {dictionary: {
   members: {hash: 'b'}
 }}
 
+var jim = {dictionary: {
+  name: 'Jim'
+}}
+
+var jimSerialized = {dictionary: {
+  name: {atom: 'Jim'}
+}}
+
 describe('serialization', function() {
   it('should serialize a dictionary resource', function() {
     var res = types.dictionary.serialize(deserialized, ancestor)
@@ -37,5 +45,9 @@ describe('serialization', function() {
       members: {hash: null}
     }}
     assert.deepEqual(res, expected)
+  })
+  it('should omit the _children array if its empty', function() {
+    var res = types.dictionary.serialize(jim, undefined)
+    assert.deepEqual(res, jimSerialized)
   })
 })
