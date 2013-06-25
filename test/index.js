@@ -22,6 +22,28 @@ var ann = {
   }
 }
 
+var project = {
+  dictionary: {
+    name: 'Histo'
+  }
+}
+
+var createExamples = {
+  dictionary: {
+    title: 'Create examples',
+    assignee: '/jim',
+    due_date: '2013-07-01'
+  }
+}
+
+var writeTests = {
+  dictionary: {
+    title: 'Write tests',
+    assignee: '/ann'
+    due_date: '2013-07-03'
+  }
+}
+
 describe('read/write to database', function() {
   it('should write a resource to a specific location', function(done) {
     db.put('/', organization, done)
