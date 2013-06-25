@@ -73,7 +73,7 @@ describe('read/write to database', function() {
   it('should retrieve the updated root resource', function(done) {
     var expected = {"dictionary":{
       "name":"LivelyCode",
-      "_children": ["members"]
+      "_members": {hash: "c6a109890f39f7a1cb91b5a00d571341a96ea205"}
     }}
     db.get('/', function(err, res) {
       assert.deepEqual(res, expected)
@@ -82,7 +82,8 @@ describe('read/write to database', function() {
   })
   it('should retrieve the list of members', function(done) {
     var expected = { dictionary: {
-      "_children": ['9c37ba065ec42fe4f900b7452b81888ffc04615a', 'ddd0a27f2f483ef3117adb93b0153f5beb3e148c']
+      '_9c37ba065ec42fe4f900b7452b81888ffc04615a': {hash: '5998e29c9003e1d2d2be515d0bdb571d191e4210'},
+      '_ddd0a27f2f483ef3117adb93b0153f5beb3e148c': {hash: '86cd722c67a3ea77c5471a516bbd6e0dc410c5c3'}
     } }
     db.get('/members', function(err, res) {
       assert.deepEqual(res, expected)
@@ -106,7 +107,7 @@ describe('read/write to database', function() {
 describe('committing', function() {
   it('should commit the current state', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, '9ef55624de09a06cc11d410f70cf3c4e30b4ce73')
+      assert.equal(res.head, '12d918f7f4bf11cbaa53f228bd8c96baeff0d0dc')
       done()
     })
   })
@@ -125,7 +126,7 @@ describe('committing', function() {
   })
   it('should commit the changes', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, '07fb75f63278c746df96db2635acd7c4128a37fc')
+      assert.equal(res.head, '7961905b593da124c9b541f5d65b288d91da8c7f')
       done()
     })
   })
