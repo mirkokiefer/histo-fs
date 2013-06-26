@@ -83,3 +83,9 @@ Embedding is only relevant for differencing and merging of models.
 
 what is now stored separately on the persistence level?
 I would say non-literals separately and literals embedded.
+
+
+Other types:
+
+counter: only has increment/decrement op
+

@@ -22,25 +22,28 @@ var ann = {
   }
 }
 
-var project = {
-  dictionary: {
-    name: 'Histo'
-  }
-}
-
-var createExamples = {
-  dictionary: {
-    title: 'Create examples',
-    assignee: '/jim',
-    due_date: '2013-07-01'
-  }
-}
-
-var writeTests = {
-  dictionary: {
-    title: 'Write tests',
-    assignee: '/ann',
-    due_date: '2013-07-03'
+var commit1 = {
+  '/projects/histo': {
+    dictionary: {
+      name: 'Histo',
+    }
+  },
+  '/projects/histo/members': {
+    set: ['jim', 'ann']
+  },
+  '/projects/histo/tasks/1': {
+    dictionary: {
+      title: 'Create examples',
+      assignee: '/jim',
+      due_date: '2013-07-01'
+    }
+  },
+  '/projects/histo/tasks/2': {
+    dictionary: {
+      title: 'Write tests',
+      assignee: '/ann',
+      due_date: '2013-07-03'
+    }
   }
 }
 
