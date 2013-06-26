@@ -16,7 +16,8 @@
     "levelup": "0.10.0",
     "sha1": "~1.0.1",
     "underscore": "~1.4.4",
-    "canonical-json": "0.0.3"
+    "canonical-json": "0.0.3",
+    "async": "~0.2.9"
   },
   "devDependencies": {
     "mocha": "~1.11.0"

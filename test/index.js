@@ -1,7 +1,7 @@
 
 var assert = require('assert')
 var histo = require('../lib/index')
-
+var async = require('async')
 var db = histo.database('test')
 
 var organization = {
@@ -22,29 +22,80 @@ var ann = {
   }
 }
 
-var commit1 = {
-  '/projects/histo': {
-    dictionary: {
-      name: 'Histo',
+var commit1 = [
+  {
+    path: '/projects/histo',
+    data: {
+      dictionary: {
+        name: 'Histo',
+      }
     }
-  },
-  '/projects/histo/members': {
-    set: ['jim', 'ann']
-  },
-  '/projects/histo/tasks/1': {
-    dictionary: {
-      title: 'Create examples',
-      assignee: '/jim',
-      due_date: '2013-07-01'
+  }, {
+    path: '/projects/histo/members',
+    data: {
+      set: ['jim', 'ann']
     }
-  },
-  '/projects/histo/tasks/2': {
-    dictionary: {
-      title: 'Write tests',
-      assignee: '/ann',
-      due_date: '2013-07-03'
+  }, {
+    path: '/projects/histo/tasks/1',
+    data: {
+      dictionary: {
+        title: 'Create examples',
+        assignee: '/jim',
+        due_date: '2013-07-01'
+      }
+    }
+  }, {
+    path: '/projects/histo/tasks/2',
+    data: {
+      dictionary: {
+        title: 'Write tests',
+        assignee: '/ann',
+        due_date: '2013-07-03'
+      }
     }
   }
+]
+
+var commit2 = [
+  {
+    path: '/projects/histo',
+    data: {
+      dictionary: {
+        name: 'HistoDB',
+      }
+    }
+  }, {
+    path: '/projects/histo/tasks/1',
+    data: {
+      dictionary: {
+        title: 'Create examples',
+        assignee: '/ann',
+        due_date: '2013-07-02'
+      }
+    }
+  }
+]
+
+var commitResources = function(resources, cb) {
+  async.eachSeries(resources, function(each, eachCb) {
+    var data = each.data
+    var writeData = function() {
+      db.put(each.path, each.data, eachCb)
+    }
+    if (each.data.dictionary) {
+      db.get(each.path, function(err, oldRes) {
+        if (oldRes) {
+          for (var key in oldRes) {
+            if (data.dictionary[key] === undefined) data.dictionary[key] = oldRes[key]
+          }
+        }
+        writeData()
+      })
+    } else {
+      writeData()
+    }
+    
+  }, cb)
 }
 
 describe('read/write to database', function() {
@@ -154,5 +205,8 @@ describe('committing', function() {
       assert.deepEqual(res, expected)
       done()
     })
+  })
+  it('should commit more data', function(done) {
+    async.eachSeries([commit1, commit2], commitResources, done)
   })
 })
