@@ -193,13 +193,13 @@ describe('committing', function() {
       done()
     })
   })
-  it('should retrieve the last commit', function(done) {
+  it('should retrieve the last commit ancestors', function(done) {
     var expected = {
       ancestors: [
         head1
       ]
     }
-    db.getCommit(head2, function(err, res) {
+    db.getAncestors(head2, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
@@ -208,7 +208,7 @@ describe('committing', function() {
     var expected = {
       ancestors: []
     }
-    db.getCommit(head1, function(err, res) {
+    db.getAncestors(head1, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
