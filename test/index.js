@@ -5,20 +5,20 @@ var async = require('async')
 var utils = require('../lib/utils')
 
 var organization = {
-  dictionary: {
+  object: {
     name: 'LivelyCode',
     _children: ['members', 'projects']
   }
 }
 
 var jim = {
-  dictionary: {
+  object: {
     name: 'Jim',
   }
 }
 
 var ann = {
-  dictionary: {
+  object: {
     name: 'Ann',
   }
 }
@@ -27,7 +27,7 @@ var commit1 = [
   {
     path: '/projects/histo',
     data: {
-      dictionary: {
+      object: {
         name: 'Histo',
         _children: ['tasks']
       }
@@ -40,7 +40,7 @@ var commit1 = [
   }, {
     path: '/projects/histo/tasks/1',
     data: {
-      dictionary: {
+      object: {
         title: 'Create examples',
         assignee: '/jim',
         due_date: '2013-07-01'
@@ -49,7 +49,7 @@ var commit1 = [
   }, {
     path: '/projects/histo/tasks/2',
     data: {
-      dictionary: {
+      object: {
         title: 'Write tests',
         assignee: '/ann',
         due_date: '2013-07-03'
@@ -62,7 +62,7 @@ var commit2 = [
   {
     path: '/projects/histo',
     data: {
-      dictionary: {
+      object: {
         name: 'HistoDB',
         _children: ['tasks']
       }
@@ -70,7 +70,7 @@ var commit2 = [
   }, {
     path: '/projects/histo/tasks/1',
     data: {
-      dictionary: {
+      object: {
         title: 'Create examples',
         assignee: '/ann',
         due_date: '2013-07-02'
@@ -87,11 +87,11 @@ var commitResources = function(resources, cb) {
     var writeData = function() {
       db.put(each.path, each.data, eachCb)
     }
-    if (each.data.dictionary) {
+    if (each.data.object) {
       db.get(each.path, function(err, oldRes) {
         if (oldRes) {
           for (var key in oldRes) {
-            if (data.dictionary[key] === undefined) data.dictionary[key] = oldRes[key]
+            if (data.object[key] === undefined) data.object[key] = oldRes[key]
           }
         }
         writeData()
@@ -138,7 +138,7 @@ describe('read/write to stage', function() {
     })
   })
   it('should retrieve the list of members', function(done) {
-    var expected = { dictionary: {
+    var expected = { object: {
       '_children': [
         utils.getLastPathComponent(jimPath),
         utils.getLastPathComponent(annPath)
@@ -168,7 +168,7 @@ describe('committing', function() {
   var head2 = null
 
   var jim1 = {
-    dictionary: {
+    object: {
       name: 'Jimmy',
     }
   }
