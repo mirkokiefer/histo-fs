@@ -2,6 +2,7 @@
 var assert = require('assert')
 var histo = require('../lib/index')
 var async = require('async')
+var utils = require('../lib/utils')
 
 var organization = {
   dictionary: {
@@ -102,7 +103,10 @@ var commitResources = function(resources, cb) {
   }, cb)
 }
 
-describe('read/write to database', function() {
+var jimPath = null
+var annPath = null
+
+describe('read/write to stage', function() {
   it('should write a resource to a specific location', function(done) {
     db.put('/', organization, done)
   })
@@ -114,17 +118,15 @@ describe('read/write to database', function() {
   })
   it('should post jim as child resource', function(done) {
     db.post('/members', jim, function(err, res) {
-      assert.deepEqual(res, {
-        "path":"/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c"
-      })
+      assert.equal(utils.getParentPath(res.path), '/members')
+      jimPath = res.path
       done()
     })
   })
   it('should post ann as child resource', function(done) {
     db.post('/members', ann, function(err, res) {
-      assert.deepEqual(res, {
-        "path":"/members/9c37ba065ec42fe4f900b7452b81888ffc04615a"
-      })
+      assert.equal(utils.getParentPath(res.path), '/members')
+      annPath = res.path
       done()
     })
   })
@@ -138,9 +140,9 @@ describe('read/write to database', function() {
   it('should retrieve the list of members', function(done) {
     var expected = { dictionary: {
       '_children': [
-        '9c37ba065ec42fe4f900b7452b81888ffc04615a',
-        'ddd0a27f2f483ef3117adb93b0153f5beb3e148c'
-      ]
+        utils.getLastPathComponent(jimPath),
+        utils.getLastPathComponent(annPath)
+      ].sort()
     } }
     db.get('/members', function(err, res) {
       assert.deepEqual(res, expected)
@@ -148,13 +150,13 @@ describe('read/write to database', function() {
     })
   })
   it('should retrieve jim', function(done) {
-    db.get('/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c', function(err, res) {
+    db.get(jimPath, function(err, res) {
       assert.deepEqual(res, jim)
       done()
     })
   })
   it('should retrieve ann', function(done) {
-    db.get('/members/9c37ba065ec42fe4f900b7452b81888ffc04615a', function(err, res) {
+    db.get(annPath, function(err, res) {
       assert.deepEqual(res, ann)
       done()
     })
@@ -162,9 +164,12 @@ describe('read/write to database', function() {
 })
 
 describe('committing', function() {
+  var head1 = null
+  var head2 = null
   it('should commit the current state', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, '26137704c03207ab8ae4d11e63ffcf46ab1b429a')
+      assert.ok(res.head)
+      head1 = res.head
       done()
     })
   })
@@ -174,8 +179,8 @@ describe('committing', function() {
         name: 'Jimmy',
       }
     }
-    db.put('/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c', jim1, function() {
-      db.get('/members/ddd0a27f2f483ef3117adb93b0153f5beb3e148c', function(err, res) {
+    db.put(jimPath, jim1, function() {
+      db.get(jimPath, function(err, res) {
         assert.deepEqual(res, jim1)
         done()
       })
@@ -183,28 +188,27 @@ describe('committing', function() {
   })
   it('should commit the changes', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, '853beaeb900dc1572f30cbe85dd4824268c3b123')
+      assert.ok(res.head)
+      head2 = res.head
       done()
     })
   })
   it('should retrieve the last commit', function(done) {
     var expected = {
-      data: '7c180b7609638ee432b557c2bafc73b5d27c9955',
       ancestors: [
-        '26137704c03207ab8ae4d11e63ffcf46ab1b429a'
+        head1
       ]
     }
-    db.getCommit('853beaeb900dc1572f30cbe85dd4824268c3b123', function(err, res) {
+    db.getCommit(head2, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
   })
   it('should retrieve the ancestor commit', function(done) {
     var expected = {
-      data: '7c180b7609638ee432b557c2bafc73b5d27c9955',
       ancestors: []
     }
-    db.getCommit('26137704c03207ab8ae4d11e63ffcf46ab1b429a', function(err, res) {
+    db.getCommit(head1, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
