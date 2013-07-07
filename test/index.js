@@ -174,7 +174,7 @@ describe('committing', function() {
   }
 
   it('should commit the current state', function(done) {
-    db.commit(function(err, res) {
+    db.commitUpdates(function(err, res) {
       assert.ok(res.head)
       head1 = res.head
       done()
@@ -189,13 +189,13 @@ describe('committing', function() {
     })
   })
   it('should check the stage only contains changes since the last commit', function(done) {
-    db.getStagedResources(function(err, res) {
+    db.getUpdatedResources(function(err, res) {
       assert.deepEqual(res, [{path: jimPath, resource: jim1}])
       done()
     })
   })
   it('should commit the changes', function(done) {
-    db.commit(function(err, res) {
+    db.commitUpdates(function(err, res) {
       assert.ok(res.head)
       head2 = res.head
       done()
@@ -207,7 +207,7 @@ describe('committing', function() {
         head1
       ]
     }
-    db.getAncestors(head2, function(err, res) {
+    db.getCommitAncestors(head2, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
@@ -216,7 +216,7 @@ describe('committing', function() {
     var expected = {
       ancestors: []
     }
-    db.getAncestors(head1, function(err, res) {
+    db.getCommitAncestors(head1, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
