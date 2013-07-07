@@ -166,6 +166,13 @@ describe('read/write to stage', function() {
 describe('committing', function() {
   var head1 = null
   var head2 = null
+
+  var jim1 = {
+    dictionary: {
+      name: 'Jimmy',
+    }
+  }
+
   it('should commit the current state', function(done) {
     db.commit(function(err, res) {
       assert.ok(res.head)
@@ -174,16 +181,17 @@ describe('committing', function() {
     })
   })
   it('should change some existing data and verify its stored', function(done) {
-    var jim1 = {
-      dictionary: {
-        name: 'Jimmy',
-      }
-    }
     db.put(jimPath, jim1, function() {
       db.get(jimPath, function(err, res) {
         assert.deepEqual(res, jim1)
         done()
       })
+    })
+  })
+  it('should check the stage only contains changes since the last commit', function(done) {
+    db.getStagedResources(function(err, res) {
+      assert.deepEqual(res, [{path: jimPath, resource: jim1}])
+      done()
     })
   })
   it('should commit the changes', function(done) {

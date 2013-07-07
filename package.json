@@ -18,7 +18,7 @@
     "canonical-json": "0.0.3",
     "async": "~0.2.9",
     "bytewise": "~0.5.0",
-    "async-iterators": "0.0.2"
+    "async-iterators": "0.0.3"
   },
   "devDependencies": {
     "mocha": "~1.11.0"
