@@ -2,7 +2,6 @@
 var assert = require('assert')
 var histo = require('../lib/index')
 var async = require('async')
-var db = histo.database('test')
 
 var organization = {
   dictionary: {
@@ -78,6 +77,8 @@ var commit2 = [
     }
   }
 ]
+
+var db = histo.database('test')
 
 var commitResources = function(resources, cb) {
   async.eachSeries(resources, function(each, eachCb) {
@@ -163,7 +164,7 @@ describe('read/write to database', function() {
 describe('committing', function() {
   it('should commit the current state', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, 'e83d083d689d08cd1eaafecbd6b95dafe15a9248')
+      assert.equal(res.head, '26137704c03207ab8ae4d11e63ffcf46ab1b429a')
       done()
     })
   })
@@ -182,28 +183,28 @@ describe('committing', function() {
   })
   it('should commit the changes', function(done) {
     db.commit(function(err, res) {
-      assert.equal(res.head, '2da7c2618bb64bb487dcc4c1e6f5880ce72443f5')
+      assert.equal(res.head, '853beaeb900dc1572f30cbe85dd4824268c3b123')
       done()
     })
   })
   it('should retrieve the last commit', function(done) {
     var expected = {
-      data: '5ac0195916528426579133cec7d671f3c58c3aa3',
+      data: '7c180b7609638ee432b557c2bafc73b5d27c9955',
       ancestors: [
-        'e83d083d689d08cd1eaafecbd6b95dafe15a9248'
+        '26137704c03207ab8ae4d11e63ffcf46ab1b429a'
       ]
     }
-    db.getCommit('2da7c2618bb64bb487dcc4c1e6f5880ce72443f5', function(err, res) {
+    db.getCommit('853beaeb900dc1572f30cbe85dd4824268c3b123', function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
   })
   it('should retrieve the ancestor commit', function(done) {
     var expected = {
-      data: 'f3110b93de657443b24a6f845ed1e19918a752de',
+      data: '7c180b7609638ee432b557c2bafc73b5d27c9955',
       ancestors: []
     }
-    db.getCommit('e83d083d689d08cd1eaafecbd6b95dafe15a9248', function(err, res) {
+    db.getCommit('26137704c03207ab8ae4d11e63ffcf46ab1b429a', function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
