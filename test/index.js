@@ -190,7 +190,17 @@ describe('committing', function() {
   })
   it('should check the stage only contains changes since the last commit', function(done) {
     db.getUpdatedResources(function(err, res) {
-      assert.deepEqual(res, [{path: jimPath, resource: jim1}])
+      var jimKey = utils.getLastPathComponent(jimPath)
+      var annKey = utils.getLastPathComponent(annPath)
+      var expected = [
+        {path: jimPath, resource: jim1},
+        {path: '/members', resource: {
+          object: {'_children': [jimKey, annKey].sort()}}
+        },
+        {path: '/', resource: organization}
+      ]
+      console.log(JSON.stringify(res))
+      assert.deepEqual(res, expected)
       done()
     })
   })
