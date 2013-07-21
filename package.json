@@ -5,7 +5,7 @@
   "homepage": "https://github.com/mirkokiefer/synclib2",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha"
+    "test": "node_modules/.bin/mocha -R spec"
   },
   "repository": "",
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
