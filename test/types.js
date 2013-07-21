@@ -9,7 +9,7 @@ var deserialized = {object: {
 }}
 
 var hashs = {
-  projects: 'a'
+  projects: {hash: 'a'}
 }
 
 var serialized = {object: {

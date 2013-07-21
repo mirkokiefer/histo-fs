@@ -173,10 +173,24 @@ describe('committing', function() {
     }
   }
 
+  var expectedMembers = function() {
+    var jimKey = utils.getLastPathComponent(jimPath)
+    var annKey = utils.getLastPathComponent(annPath)
+    return {
+      object: {'_children': [jimKey, annKey].sort()}
+    }
+  }
+
   it('should commit the current state', function(done) {
     db.commitUpdates(function(err, res) {
       assert.ok(res.head)
       head1 = res.head
+      done()
+    })
+  })
+  it('should fetch a committed resource', function(done) {
+    db.get('/members', function(err, res) {
+      assert.deepEqual(res, expectedMembers())
       done()
     })
   })
@@ -189,17 +203,12 @@ describe('committing', function() {
     })
   })
   it('should check the stage only contains changes since the last commit', function(done) {
+    var expected = [
+      {path: jimPath, resource: jim1},
+      {path: '/members', resource: expectedMembers()},
+      {path: '/', resource: organization}
+    ]
     db.getUpdatedResources(function(err, res) {
-      var jimKey = utils.getLastPathComponent(jimPath)
-      var annKey = utils.getLastPathComponent(annPath)
-      var expected = [
-        {path: jimPath, resource: jim1},
-        {path: '/members', resource: {
-          object: {'_children': [jimKey, annKey].sort()}}
-        },
-        {path: '/', resource: organization}
-      ]
-      console.log(JSON.stringify(res))
       assert.deepEqual(res, expected)
       done()
     })
