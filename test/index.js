@@ -79,7 +79,7 @@ var commit2 = [
   }
 ]
 
-var db = histo.database('test')
+var db = histo.database(__dirname, 'test')
 
 var commitResources = function(resources, cb) {
   async.eachSeries(resources, function(each, eachCb) {
