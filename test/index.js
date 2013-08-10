@@ -23,74 +23,86 @@ var ann = {
   }
 }
 
-var commit1 = [
-  {
-    path: '/projects/histo',
-    data: {
-      object: {
-        name: 'Histo',
-        _children: ['members', 'tasks']
+var commit1 = {
+  hash: null,
+  data: [
+    {
+      path: '/projects/histo',
+      data: {
+        object: {
+          name: 'Histo',
+          _children: ['members', 'tasks']
+        }
+      }
+    }, {
+      path: '/projects/histo/members',
+      data: {
+        set: ['jim', 'ann']
+      }
+    }, {
+      path: '/projects/histo/tasks/1',
+      data: {
+        object: {
+          title: 'Create examples',
+          assignee: 'jim',
+          due_date: '2013-07-01'
+        }
+      }
+    }, {
+      path: '/projects/histo/tasks/2',
+      data: {
+        object: {
+          title: 'Write tests',
+          assignee: 'ann',
+          due_date: '2013-07-03'
+        }
       }
     }
-  }, {
-    path: '/projects/histo/members',
-    data: {
-      set: ['jim', 'ann']
-    }
-  }, {
-    path: '/projects/histo/tasks/1',
-    data: {
-      object: {
-        title: 'Create examples',
-        assignee: '/jim',
-        due_date: '2013-07-01'
-      }
-    }
-  }, {
-    path: '/projects/histo/tasks/2',
-    data: {
-      object: {
-        title: 'Write tests',
-        assignee: '/ann',
-        due_date: '2013-07-03'
-      }
-    }
-  }
-]
+  ]
+}
 
-var commit2 = [
-  {
-    path: '/projects/histo',
-    data: {
-      object: {
-        name: 'HistoDB',
-        _children: ['members', 'tasks']
+var commit2 = {
+  hash: null,
+  data: [
+    {
+      path: '/projects/histo',
+      data: {
+        object: {
+          name: 'HistoDB',
+          _children: ['members', 'tasks']
+        }
+      }
+    }, {
+      path: '/projects/histo/tasks/1',
+      data: {
+        object: {
+          title: 'Create examples',
+          assignee: 'ann',
+          due_date: '2013-07-02'
+        }
       }
     }
-  }, {
-    path: '/projects/histo/tasks/1',
-    data: {
-      object: {
-        title: 'Create examples',
-        assignee: '/ann',
-        due_date: '2013-07-02'
-      }
-    }
-  }
-]
+  ]
+}
 
 var db = histo.database(__dirname, 'test')
 
-var commitResources = function(resources, cb) {
-  async.eachSeries(resources, function(each, eachCb) {
+var commitResources = function(commit, cb) {
+  async.eachSeries(commit.data, function(each, eachCb) {
     var data = each.data
     db.put(each.path, each.data, eachCb)
-  }, cb)
+  }, function() {
+    db.commitUpdates(function(err, res) {
+      commit.hash = res.head
+      cb()
+    })
+  })
 }
 
-var assertResources = function(resources, cb) {
-  async.each(resources, function(each, cb) {
+var assertResources = function(commit, cb) {
+  async.each(commit.data, function(each, cb) {
     db.get(each.path, function(err, res) {
+      console.log('#####', res, each.data)
       assert.deepEqual(res, each.data)
       cb()
     })
@@ -251,6 +263,6 @@ describe('committing', function() {
     })
   })
   it('should commit more data', function(done) {
-    async.eachSeries([commit1, commit2], commitAndAssertResources, done)
+    async.eachSeries([commit1], commitAndAssertResources, done)
   })
 })
