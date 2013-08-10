@@ -85,14 +85,14 @@ var commit2 = {
   ]
 }
 
-var db = histo.database(__dirname, 'test')
+var db1 = histo.database(__dirname, 'test')
 
 var commitResources = function(commit, cb) {
   async.eachSeries(commit.data, function(each, eachCb) {
     var data = each.data
-    db.put(each.path, each.data, eachCb)
+    db1.put(each.path, each.data, eachCb)
   }, function() {
-    db.commitUpdates(function(err, res) {
+    db1.commitUpdates(function(err, res) {
       commit.hash = res.head
       cb()
     })
@@ -101,7 +101,7 @@ var commitResources = function(commit, cb) {
 
 var assertResources = function(commit, cb) {
   async.eachSeries(commit.data, function(each, cb) {
-    db.get(each.path, function(err, res) {
+    db1.get(each.path, function(err, res) {
       assert.deepEqual(res, each.data)
       cb()
     })
@@ -118,34 +118,34 @@ var jimPath = null
 var annPath = null
 
 before(function(done) {
-  db.open(done)
+  db1.open(done)
 })
 
 after(function(done) {
-  db.close(function() {
-    db.destroy(done)    
+  db1.close(function() {
+    db1.destroy(done)    
   })
 })
 
 describe('read/write to stage', function() {
   it('should write a resource to a specific location', function(done) {
-    db.put('/', organization, done)
+    db1.put('/', organization, done)
   })
   it('should read the resource', function(done) {
-    db.get('/', function(err, res) {
+    db1.get('/', function(err, res) {
       assert.deepEqual(res, organization)
       done()
     })
   })
   it('should post jim as child resource', function(done) {
-    db.post('/members', jim, function(err, res) {
+    db1.post('/members', jim, function(err, res) {
       assert.equal(utils.getParentPath(res.path), '/members')
       jimPath = res.path
       done()
     })
   })
   it('should post ann as child resource', function(done) {
-    db.post('/members', ann, function(err, res) {
+    db1.post('/members', ann, function(err, res) {
       assert.equal(utils.getParentPath(res.path), '/members')
       annPath = res.path
       done()
@@ -153,7 +153,7 @@ describe('read/write to stage', function() {
   })
   it('should retrieve the updated root resource', function(done) {
     var expected = organization
-    db.get('/', function(err, res) {
+    db1.get('/', function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
@@ -165,19 +165,19 @@ describe('read/write to stage', function() {
         utils.getLastPathComponent(annPath)
       ].sort()
     } }
-    db.get('/members', function(err, res) {
+    db1.get('/members', function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
   })
   it('should retrieve jim', function(done) {
-    db.get(jimPath, function(err, res) {
+    db1.get(jimPath, function(err, res) {
       assert.deepEqual(res, jim)
       done()
     })
   })
   it('should retrieve ann', function(done) {
-    db.get(annPath, function(err, res) {
+    db1.get(annPath, function(err, res) {
       assert.deepEqual(res, ann)
       done()
     })
@@ -203,21 +203,21 @@ describe('committing', function() {
   }
 
   it('should commit the current state', function(done) {
-    db.commitUpdates(function(err, res) {
+    db1.commitUpdates(function(err, res) {
       assert.ok(res.head)
       head1 = res.head
       done()
     })
   })
   it('should fetch a committed resource', function(done) {
-    db.get('/members', function(err, res) {
+    db1.get('/members', function(err, res) {
       assert.deepEqual(res, expectedMembers())
       done()
     })
   })
   it('should change some existing data and verify its stored', function(done) {
-    db.put(jimPath, jim1, function() {
-      db.get(jimPath, function(err, res) {
+    db1.put(jimPath, jim1, function() {
+      db1.get(jimPath, function(err, res) {
         assert.deepEqual(res, jim1)
         done()
       })
@@ -229,13 +229,13 @@ describe('committing', function() {
       {path: '/members', resource: expectedMembers()},
       {path: '/', resource: organization}
     ]
-    db.getUpdatedResources(function(err, res) {
+    db1.getUpdatedResources(function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
   })
   it('should commit the changes', function(done) {
-    db.commitUpdates(function(err, res) {
+    db1.commitUpdates(function(err, res) {
       assert.ok(res.head)
       head2 = res.head
       done()
@@ -247,7 +247,7 @@ describe('committing', function() {
         head1
       ]
     }
-    db.getCommitAncestors(head2, function(err, res) {
+    db1.getCommitAncestors(head2, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
@@ -256,12 +256,80 @@ describe('committing', function() {
     var expected = {
       ancestors: []
     }
-    db.getCommitAncestors(head1, function(err, res) {
+    db1.getCommitAncestors(head1, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
   })
   it('should commit more data', function(done) {
-    async.eachSeries([commit1], commitAndAssertResources, done)
+    async.eachSeries([commit1, commit2], commitAndAssertResources, done)
+  })
+})
+
+var commit3 = {
+  hash: null,
+  data: [
+    {
+      path: '/projects/histo/tasks/1',
+      data: {
+        object: {
+          title: 'Create examples',
+          assignee: 'ann',
+          due_date: '2013-07-03'
+        }
+      }
+    }
+  ]
+}
+
+var commit4 = {
+  hash: null,
+  data: [
+    {
+      path: '/projects/histo',
+      data: {
+        object: {
+          name: 'histo.js',
+          _children: ['members', 'tasks']
+        }
+      }
+    }, {
+      path: '/projects/histo/tasks/3',
+      data: {
+        object: {
+          title: 'Create website',
+          assignee: 'ann',
+          due_date: '2013-07-12'
+        }
+      }
+    }
+  ]
+}
+
+var commit5 = {
+  hash: null,
+  data: [
+    {
+      path: '/projects/histo/tasks/4',
+      data: {
+        object: {
+          title: 'Create presentation',
+          assignee: 'ann',
+          due_date: '2013-07-14'
+        }
+      }
+    }
+  ]
+}
+
+describe('differencing', function() {
+  var db2 = null
+  after(function(done) {
+    db2.close(function() { db2.destroy(done) })
+  })
+
+  it('should create a new db', function(done) {
+    db2 = histo.database(__dirname, 'test2')
+    db2.open(done)
   })
 })
