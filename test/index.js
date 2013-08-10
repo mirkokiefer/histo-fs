@@ -29,7 +29,7 @@ var commit1 = [
     data: {
       object: {
         name: 'Histo',
-        _children: ['tasks']
+        _children: ['members', 'tasks']
       }
     }
   }, {
@@ -64,7 +64,7 @@ var commit2 = [
     data: {
       object: {
         name: 'HistoDB',
-        _children: ['tasks']
+        _children: ['members', 'tasks']
       }
     }
   }, {
@@ -84,23 +84,23 @@ var db = histo.database(__dirname, 'test')
 var commitResources = function(resources, cb) {
   async.eachSeries(resources, function(each, eachCb) {
     var data = each.data
-    var writeData = function() {
-      db.put(each.path, each.data, eachCb)
-    }
-    if (each.data.object) {
-      db.get(each.path, function(err, oldRes) {
-        if (oldRes) {
-          for (var key in oldRes) {
-            if (data.object[key] === undefined) data.object[key] = oldRes[key]
-          }
-        }
-        writeData()
-      })
-    } else {
-      writeData()
-    }
-    
+    db.put(each.path, each.data, eachCb)
   }, cb)
+}
+
+var assertResources = function(resources, cb) {
+  async.each(resources, function(each, cb) {
+    db.get(each.path, function(err, res) {
+      assert.deepEqual(res, each.data)
+      cb()
+    })
+  }, cb)
+}
+
+var commitAndAssertResources = function(resources, cb) {
+  commitResources(resources, function() {
+    assertResources(resources, cb)
+  })
 }
 
 var jimPath = null
@@ -251,6 +251,6 @@ describe('committing', function() {
     })
   })
   it('should commit more data', function(done) {
-    async.eachSeries([commit1, commit2], commitResources, done)
+    async.eachSeries([commit1, commit2], commitAndAssertResources, done)
   })
 })
