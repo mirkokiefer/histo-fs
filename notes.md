@@ -88,4 +88,12 @@ I would say non-literals separately and literals embedded.
 Other types:
 
 counter: only has increment/decrement op
+spreadsheet/matrix: if modelling through arrays doesnt work (specific merging needs)
+what about embedding in spreadsheets? could spreadsheets expose a _children attribute as well?
+or can they only reference other objects and not embed?
+what about xml/html?
+can be modelled through dicts - but what if we want merging strategies across levels?
+we would need an actual tree type which defines an entire tree as a resource.
+should merging strategies always only work on a per resource level? or can they happen across resources?
+I would say they should be tied to the resource type and have only read-only access to other resources - so cross-resource strategies would have to be written in a commutative style.
 
