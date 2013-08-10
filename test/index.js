@@ -100,9 +100,8 @@ var commitResources = function(commit, cb) {
 }
 
 var assertResources = function(commit, cb) {
-  async.each(commit.data, function(each, cb) {
+  async.eachSeries(commit.data, function(each, cb) {
     db.get(each.path, function(err, res) {
-      console.log('#####', res, each.data)
       assert.deepEqual(res, each.data)
       cb()
     })
