@@ -12,13 +12,13 @@
   "license": "BSD",
   "dependencies": {
     "ancestor": "0.1.0",
-    "memdown": "0.2.0",
     "sha1": "~1.0.1",
     "underscore": "~1.4.4",
     "canonical-json": "0.0.3",
     "async": "~0.2.9",
     "bytewise": "~0.5.0",
-    "async-iterators": "0.0.3"
+    "async-iterators": "0.0.4",
+    "leveldown": "~0.6.2"
   },
   "devDependencies": {
     "mocha": "~1.11.0"

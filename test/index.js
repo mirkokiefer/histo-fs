@@ -110,6 +110,12 @@ before(function(done) {
   db.open(done)
 })
 
+after(function(done) {
+  db.close(function() {
+    db.destroy(done)    
+  })
+})
+
 describe('read/write to stage', function() {
   it('should write a resource to a specific location', function(done) {
     db.put('/', organization, done)
@@ -213,7 +219,6 @@ describe('committing', function() {
       {path: '/', resource: organization}
     ]
     db.getUpdatedResources(function(err, res) {
-      console.log(res)
       assert.deepEqual(res, expected)
       done()
     })
