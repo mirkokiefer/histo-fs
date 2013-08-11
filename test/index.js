@@ -24,6 +24,14 @@ var ann = {
 }
 
 var commit1 = {
+  hash: null
+}
+
+var commit2 = {
+  hash: null
+}
+
+var commit3 = {
   hash: null,
   data: [
     {
@@ -61,7 +69,7 @@ var commit1 = {
   ]
 }
 
-var commit2 = {
+var commit4 = {
   hash: null,
   data: [
     {
@@ -185,8 +193,6 @@ describe('read/write to stage', function() {
 })
 
 describe('committing', function() {
-  var head1 = null
-  var head2 = null
 
   var jim1 = {
     object: {
@@ -205,7 +211,7 @@ describe('committing', function() {
   it('should commit the current state', function(done) {
     db1.commitUpdates(function(err, res) {
       assert.ok(res.head)
-      head1 = res.head
+      commit1.hash = res.head
       done()
     })
   })
@@ -237,17 +243,17 @@ describe('committing', function() {
   it('should commit the changes', function(done) {
     db1.commitUpdates(function(err, res) {
       assert.ok(res.head)
-      head2 = res.head
+      commit2.hash = res.head
       done()
     })
   })
   it('should retrieve the last commit ancestors', function(done) {
     var expected = {
       ancestors: [
-        head1
+        commit1.hash
       ]
     }
-    db1.getCommitAncestors(head2, function(err, res) {
+    db1.getCommitAncestors(commit2.hash, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
@@ -256,17 +262,17 @@ describe('committing', function() {
     var expected = {
       ancestors: []
     }
-    db1.getCommitAncestors(head1, function(err, res) {
+    db1.getCommitAncestors(commit1.hash, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
   })
   it('should commit more data', function(done) {
-    async.eachSeries([commit1, commit2], commitAndAssertResources, done)
+    async.eachSeries([commit3, commit4], commitAndAssertResources, done)
   })
 })
 
-var commit3 = {
+var commit5 = {
   hash: null,
   data: [
     {
@@ -282,7 +288,7 @@ var commit3 = {
   ]
 }
 
-var commit4 = {
+var commit6 = {
   hash: null,
   data: [
     {
@@ -306,7 +312,7 @@ var commit4 = {
   ]
 }
 
-var commit5 = {
+var commit7 = {
   hash: null,
   data: [
     {
@@ -324,13 +330,13 @@ var commit5 = {
 
 describe('differencing', function() {
   it('should reset the head to a previous commit', function(done) {
-    db1.resetHead(commit1.hash, function(err, res) {
-      assert.deepEqual(res.head, commit1.hash)
+    db1.resetHead(commit2.hash, function(err, res) {
+      assert.deepEqual(res.head, commit2.hash)
       done()
     })
   })
-  it('should commit some data thereby creating a fork', function(done) {
-    async.eachSeries([commit3, commit4], commitAndAssertResources, done)
+  it('should commit some data thereby leaving a fork', function(done) {
+    async.eachSeries([commit5, commit6], commitAndAssertResources, done)
   })
 })
 
