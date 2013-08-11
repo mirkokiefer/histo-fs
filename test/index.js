@@ -333,3 +333,11 @@ describe('differencing', function() {
     async.eachSeries([commit3, commit4], commitAndAssertResources, done)
   })
 })
+
+
+/*
+
+TODO:
+- test writes while committing (race condition when resetting stage)
+
+*/
