@@ -324,6 +324,9 @@ var commit5 = {
 
 describe('differencing', function() {
   it('should reset the head to a previous commit', function(done) {
-    db1.resetHead(commit1.hash, done)
+    db1.resetHead(commit1.hash, function(err, res) {
+      assert.deepEqual(res.head, commit1.hash)
+      done()
+    })
   })
 })
