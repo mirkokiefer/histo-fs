@@ -323,13 +323,7 @@ var commit5 = {
 }
 
 describe('differencing', function() {
-  var db2 = null
-  after(function(done) {
-    db2.close(function() { db2.destroy(done) })
-  })
-
-  it('should create a new db', function(done) {
-    db2 = histo.database(__dirname, 'test2')
-    db2.open(done)
+  it('should reset the head to a previous commit', function(done) {
+    db1.resetHead(commit1.hash, done)
   })
 })
