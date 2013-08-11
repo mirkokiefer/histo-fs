@@ -329,4 +329,7 @@ describe('differencing', function() {
       done()
     })
   })
+  it('should commit some data thereby creating a fork', function(done) {
+    async.eachSeries([commit3, commit4], commitAndAssertResources, done)
+  })
 })
