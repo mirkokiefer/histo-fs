@@ -19,7 +19,8 @@
     "bytewise": "~0.5.0",
     "async-iterators": "0.0.4",
     "leveldown": "~0.6.2",
-    "diff-merge-patch": "~0.6.0"
+    "diff-merge-patch": "~0.6.0",
+    "graph-difference": "0.0.2"
   },
   "devDependencies": {
     "mocha": "~1.11.0"

@@ -328,6 +328,13 @@ var commit7 = {
   ]
 }
 
+/*
+      5 - 6
+     /
+1 - 2 - 3 - 4
+
+*/
+
 describe('differencing', function() {
   it('should reset the head to a previous commit', function(done) {
     db1.resetHead(commit2.hash, function(err, res) {
@@ -335,11 +342,24 @@ describe('differencing', function() {
       done()
     })
   })
-  it('should commit some data thereby leaving a fork', function(done) {
+  it('should commit some data thereby leaving commit4 as a branch', function(done) {
     async.eachSeries([commit5, commit6], commitAndAssertResources, done)
   })
+  it('should find the commit difference between the head and the common ancestor', function(done) {
+    var expected = [commit6.hash, commit5.hash]
+    db1.getCommitDifference(commit2.hash, function(err, res) {
+      assert.deepEqual(res, expected)
+      done()
+    })
+  })
+  it('should find the commit difference between the head and the branch', function(done) {
+    var expected = [commit6.hash, commit5.hash]
+    db1.getCommitDifference(commit4.hash, function(err, res) {
+      assert.deepEqual(res, expected)
+      done()
+    })
+  })
 })
-
 
 /*
 
