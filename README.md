@@ -1,10 +1,5 @@
-#synclib2
-Realtime and non-realtime syncing of common data structures:
-
-- Sets
-- Dictionaries
-- Ordered Lists
-- Ordered Sets
+#HistoDB
+Peer-to-peer synchronizable database for the browser and Node.js.
 
 ##Design goals
 - **no timestamps**: history based 3-way merging
@@ -24,19 +19,21 @@ To the latest commit on a database we refer to as the 'head'.
 Syncing follows the following protocol:
 
 ```
-Client has committed to its local database.
-Client pushs all commits since the last synced commit to Server.
-Client asks Server for the common ancestor of client's head and the server's head
-Client pushs all changed data since the common ancestor to Server.
+sourceHead = source.head.master
+targetHead = target.head.master
+lastSyncedCommit = target.getRemoteTrackingHead(source.id)
 
-if common ancestor == server head
-  // there is no data to merge
-  try fast-forward of server's head to client's head
-  if failed (someone else updated server's head in the meantime) then start over
-else
-  Client asks Server for all commits + data since the common ancestor
-  Client does a local merge and commits it to the local database
-  start over
+commitIDsSource = source.getCommitDifference(lastSyncedCommit, sourceHead)
+
+target.writeCommitIDs(commitIDsSource)
+
+commonAncestor = target.getCommonAncestor(targetHead, sourceHead)
+
+changedData = source.getDataDifference(commonAncestor, sourceHead)
+
+target.writeData(changedData)
+
+target.setRemoteTrackingHead(source.id, sourceHead)
 ```
 
 This protocol is able to minimize the amount of data sent between synced stores even in a distributed, peer-to-peer setting.
@@ -50,9 +47,6 @@ For diff, merge and patch computation the library makes heavy use of [diff-merge
 ###Dictionaries
 ###Ordered Lists
 ###OrderedSets
-
-##What about synclib?
-[Synclib](https://github.com/mirkok/synclib) only supported syncing of tree-based data. Synclib2 is the result of a complete rewrite while providing more generic support for various basic data structures.
 
 ##Contributors
 This project was created by Mirko Kiefer ([@mirkokiefer](https://github.com/mirkokiefer)).
