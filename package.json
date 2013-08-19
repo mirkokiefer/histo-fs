@@ -1,13 +1,13 @@
 {
-  "name": "synclib2",
+  "name": "histodb",
   "version": "0.0.1",
-  "description": "sync your data",
-  "homepage": "https://github.com/mirkokiefer/synclib2",
+  "description": "Peer-to-peer synchronizable database for the browser and Node.js.",
+  "homepage": "https://github.com/mirkokiefer/HistoDB",
   "main": "lib/index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha -R spec"
   },
-  "repository": "",
+  "repository": "https://github.com/mirkokiefer/HistoDB.git",
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
   "license": "BSD",
   "dependencies": {
