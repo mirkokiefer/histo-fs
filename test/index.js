@@ -347,14 +347,14 @@ describe('differencing', function() {
   })
   it('should find the commit difference between the head and the common ancestor', function(done) {
     var expected = [commit6.hash, commit5.hash]
-    db1.getCommitDifference(commit2.hash, function(err, res) {
+    db1.getCommitDifference(commit2.hash, db1.head, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
   })
   it('should find the commit difference between the head and the branch', function(done) {
     var expected = [commit6.hash, commit5.hash]
-    db1.getCommitDifference(commit4.hash, function(err, res) {
+    db1.getCommitDifference(commit4.hash, db1.head, function(err, res) {
       assert.deepEqual(res, expected)
       done()
     })
