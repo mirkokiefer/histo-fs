@@ -1,13 +1,13 @@
 {
-  "name": "histodb",
+  "name": "histo-fs",
   "version": "0.0.1",
-  "description": "Peer-to-peer synchronizable database for the browser and Node.js.",
-  "homepage": "https://github.com/mirkokiefer/HistoDB",
+  "description": "a file-system data type for HistoDB",
+  "homepage": "https://github.com/mirkokiefer/histo-fs",
   "main": "lib/index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha -R spec"
   },
-  "repository": "https://github.com/mirkokiefer/HistoDB.git",
+  "repository": "https://github.com/mirkokiefer/histo-fs.git",
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
   "license": "BSD",
   "dependencies": {
